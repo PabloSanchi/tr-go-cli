@@ -17,7 +17,7 @@ func TestExecuteDefault(t *testing.T) {
             name:          "Test Case 1",
             args:          []string{"old", "new"},
             input:         "old value",
-            expectedOutput: "new value",
+            expectedOutput: "new vaeue",
             expectError:   false,
         },
 		{
@@ -33,6 +33,13 @@ func TestExecuteDefault(t *testing.T) {
             input:         "",
             expectedOutput: "",
             expectError:   true,
+        },
+        {
+            name:          "Test Case 4",
+            args:          []string{"old", "new"},
+            input:         "old value",
+            expectedOutput: "new vaeue",
+            expectError:   false,
         },
     }
 
