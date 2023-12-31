@@ -11,3 +11,8 @@ Coding Challenges
 ```
 
 Type CTRL-D to send the EOF and terminate cctr.
+
+Try it with the following
+```bash
+go build && echo coding challenges | ./cctr c C
+```
