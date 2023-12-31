@@ -11,6 +11,7 @@ import (
 
 var ExecuteDeleteFlag bool
 var ExecuteSqueezeFlag bool
+var ExecuteDeleteAndSqueezeFlag bool
 var output string
 var err error
 
@@ -32,10 +33,8 @@ var rootCmd = &cobra.Command{
 				log.Fatal("An error occurred while reading input")
 			}
 			
-			if !ExecuteDeleteFlag && !ExecuteSqueezeFlag {
-				output, err = ExecuteDefault(input, args)
-			}
-	
+			output, err = ExecuteDefault(input, args)
+			
 			if err != nil {
 				log.Fatal("Error: %w", err)
 			}
@@ -56,4 +55,5 @@ func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	rootCmd.PersistentFlags().BoolVarP(&ExecuteDeleteFlag, "delete", "d", false, "Execute Delete Mode")
 	rootCmd.PersistentFlags().BoolVarP(&ExecuteSqueezeFlag, "squeeze", "s", false, "Execute Squeeze Mode")
+	rootCmd.PersistentFlags().BoolVarP(&ExecuteDeleteAndSqueezeFlag, "delete and squeeze", "a", false, "Execute Delete and Squeeze Mode")
 }
