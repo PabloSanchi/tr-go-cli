@@ -2,14 +2,15 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
 	"golang.org/x/exp/slices"
 )
 
-func mapCharacter(c string, from []string, to []string) string {
-	idx := getIndex(from, c)
+func MapChar(char string, from, to []string) string {
+	idx := slices.IndexFunc(from, func(s string) bool { return s == char })
 
 	if idx == -1 {
-		return c
+		return char
 	}
 
 	if idx >= len(to) {
@@ -19,46 +20,60 @@ func mapCharacter(c string, from []string, to []string) string {
 	return to[idx]
 }
 
-func getIndex(slice []string, target string) int {
-	idx := slices.IndexFunc(slice, func(s string) bool { return s == target })
-	return idx
-}
-
-func TRCharacters(from []string, to []string, input string) string {
-	var output string
+func TranslateChars(from, to []string, input string) string {
+	var output strings.Builder
 	for _, c := range input {
-		output += mapCharacter(string(c), from, to)
+		output.WriteString(MapChar(string(c), from, to))
 	}
-	return output
+	return output.String()
 }
 
-func DefaultStrategy(arg string) []string {
-	var charSlice []string
-    for _, r := range arg {
-        charSlice = append(charSlice, string(r))
-    }
-	return charSlice
+func ToSlice(s string) ([]string, error) {
+	var slice []string
+	for _, r := range s {
+		slice = append(slice, string(r))
+	}
+	return slice, nil
 }
 
-/*
-stategies:
-	default => no - or "[:<class>:]"
-	range -> that means the arument contains a -
-	class -> that means the arument contains a "[:<class>:]"
-*/
+func ToRangeSlice(arg string) ([]string, error) {
+	firstChar, lastChar := rune(arg[0]), rune(arg[len(arg)-1])
+
+	if lastChar < firstChar {
+		return []string{}, fmt.Errorf("Invalid range")
+	}
+
+	var slice []string
+	for i := firstChar; i <= lastChar; i++ {
+		slice = append(slice, string(i))
+	}
+
+	return slice, nil
+}
+
 func ExecuteDefault(input string, args []string) (string, error) {
-	
 	if len(args) < 2 {
 		return "", fmt.Errorf("At least two arguments are required")
 	}
 
-	firstArg := DefaultStrategy(args[0])
-	secondArg := DefaultStrategy(args[1])
+	firstArg, err := parseArg(args[0])
 
-	fmt.Println("firstArg", firstArg)
-	fmt.Println("secondArg", secondArg)
+	if err != nil {
+		return "", fmt.Errorf("First argument parse error: %w", err)
+	}
 
-	output := TRCharacters(firstArg, secondArg, input)
+	secondArg, err := parseArg(args[1])
 
-	return output, nil
+	if err != nil {
+		return "", fmt.Errorf("Second argument parse error: %w", err)
+	}
+
+	return TranslateChars(firstArg, secondArg, input), nil
+}
+
+func parseArg(arg string) ([]string, error) {
+	if strings.Contains(arg, "-") {
+		return ToRangeSlice(arg)
+	}
+	return ToSlice(arg)
 }

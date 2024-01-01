@@ -41,6 +41,20 @@ func TestExecuteDefault(t *testing.T) {
             expectedOutput: "new vaeue",
             expectError:   false,
         },
+        {
+            name:          "Test Case 5",
+            args:          []string{"A-Z", "a-z"},
+            input:         "INPUT",
+            expectedOutput: "input",
+            expectError:   false,
+        },
+        {
+            name:          "Test Case 6",
+            args:          []string{"z-A", "a-z"},
+            input:         "",
+            expectedOutput: "",
+            expectError:   true,
+        },
     }
 
     for _, tc := range testCases {
