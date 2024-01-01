@@ -1,11 +1,9 @@
 package cmd
 
 import (
-	"io"
 	"os"
 	"fmt"
 	"log"
-	"bufio"
 	"github.com/spf13/cobra"
 )
 
@@ -16,24 +14,33 @@ var output string
 var err error
 
 var rootCmd = &cobra.Command{
-    Use:   "cc43",
+    Use:   "cctr",
     Short: "Code Challenge 43",
-    Long: "Code Challenge 43",
+    Long: `
+	Code Challenge 43:
+	NAME
+		cctr – translate characters
+
+	SYNOPSIS
+		cctr [-Ccsu] string1 string2
+		tcctr [-Ccu] -d string1
+		cctr [-Ccu] -s string1
+		cctr [-Ccu] -ds string1 string2
+
+	DESCRIPTION
+		The cctr utility copies the standard input to the standard output with
+		substitution or deletion of selected characters.`,
     Run: func(cmd *cobra.Command, args []string) {
+
 		for {
-
-			reader := bufio.NewReader(os.Stdin)
-			input, err := reader.ReadString('\n')
-			if err != nil {
-
-				if err == io.EOF {
-					os.Exit(0)
-				}
-				
-				log.Fatal("An error occurred while reading input")
-			}
 			
-			output, err = ExecuteDefault(input, args)
+			input, err := ReadUserInput(args)
+
+			if err != nil {
+				log.Fatal("Error: %w", err)
+			}
+
+			output, err := ExecuteDefault(input, args)
 			
 			if err != nil {
 				log.Fatal("Error: %w", err)
@@ -55,5 +62,5 @@ func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	rootCmd.PersistentFlags().BoolVarP(&ExecuteDeleteFlag, "delete", "d", false, "Execute Delete Mode")
 	rootCmd.PersistentFlags().BoolVarP(&ExecuteSqueezeFlag, "squeeze", "s", false, "Execute Squeeze Mode")
-	rootCmd.PersistentFlags().BoolVarP(&ExecuteDeleteAndSqueezeFlag, "delete and squeeze", "a", false, "Execute Delete and Squeeze Mode")
+	rootCmd.PersistentFlags().BoolVar(&ExecuteDeleteAndSqueezeFlag, "ds", false, "Execute Delete and Squeeze Mode")
 }
