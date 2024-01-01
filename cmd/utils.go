@@ -7,17 +7,18 @@ import (
 	"bufio"
 )
 
-func ReadUserInput(args []string) (string, error) {
+func ReadUserInput() (string, error) {
 	reader := bufio.NewReader(os.Stdin)
+	var input string
+
 	input, err := reader.ReadString('\n')
 	if err != nil {
-
 		if err == io.EOF {
 			os.Exit(0)
 		}
-		
-		return "", fmt.Errorf("An error occurred while reading input")
+		return "", fmt.Errorf("An error occurred while reading input: %v", err)
 	}
 
-	return input, nil	
+
+	return input, nil
 }

@@ -33,8 +33,8 @@ var rootCmd = &cobra.Command{
     Run: func(cmd *cobra.Command, args []string) {
 
 		for {
-			
-			input, err := ReadUserInput(args)
+
+			input, err := ReadUserInput()
 
 			if err != nil {
 				log.Fatal("Error: %w", err)
